@@ -19,7 +19,7 @@ exports.getJobById = async (req, res, next) => {
             res.status(400).json({ success: false, message: "Invalid ID " })
         }
          
-        const job = await JobModel.findById(id)
+        const job = await JobModel.findById(id).populate("company")
         if (!job) return res.status(404).json({ success: false, message: "Job Not Found" })
         res.json({ success: true, message: "Job Details", job })
     } catch (error) {

@@ -49,12 +49,14 @@ async function run() {
         mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true
-        }).then(() => console.log('MongoDB connected'))
+        })
+            .then(() => console.log('MongoDB connected'))
+            .then(() => app.listen(port, () => {
+                console.log(`server runnning on ${port}....`)
+            }))
             .catch(err => console.error('MongoDB connection error:', err));
 
-        app.listen(port, () => {
-            console.log(`server runnning on ${port}....`)
-        })
+
     }
     catch (err) {
         console.error("Connection error:", err);
