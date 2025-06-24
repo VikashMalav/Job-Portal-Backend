@@ -41,8 +41,11 @@ exports.searchJobs = async (req, res, next) => {
                 { description: { $regex: trimQuery, $options: "i" } },
                  { skills: { $regex: trimQuery, $options: "i" } },
             ]
-        });
-        res.json({success:true,message:"Find Query Result ",searchResult})
+        }).populate("company")
+        console.log(searchResult)
+        if(searchResult.length===0) return res.status(404).json({success:false,message:"Result Not Found...",searchResult})
+        
+        res.json({success:true,message:"Find Query Result ",searchResult,length:searchResult.length})
     } catch (error) {
         console.log(error)
         next(error)
