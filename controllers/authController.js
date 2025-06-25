@@ -198,7 +198,8 @@ const loginUser = async (req, res, next) => {
             user: {id:user._id,
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                appliedJobs:user.appliedJobs
             }
         })
     } catch (err) {
@@ -220,7 +221,8 @@ const logoutUser = async (req, res, next) => {
 const getUserProfile = async (req, res, next) => {
     try {
        if(!req.user) return res.status(401).json({success:false,message:"UnAuthorized: Please Login First"})
-         res.json({success:true,message:"User Profile",user:req.user})
+        allUserDetails =await userModel.findOne({_id:req.user.id},"-password")
+         res.json({success:true,message:"User Profile",user:allUserDetails})
     } catch (error) {
         console.log(error)
     }
