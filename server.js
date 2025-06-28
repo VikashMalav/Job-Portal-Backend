@@ -21,7 +21,7 @@ const uri = process.env.DB_URI;
 
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+  origin:process.env.ORIGIN ,
     credentials: true
 }));
 app.use(cookieParser())

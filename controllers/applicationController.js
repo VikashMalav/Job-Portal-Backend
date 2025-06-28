@@ -89,6 +89,7 @@ exports.getUserApplications = async (req, res, next) => {
     const appliedJobs = await userModel
       .findOne({ _id: userId },"appliedJobs")
       .populate("appliedJobs", "title company ")
+      
 
     res.json({ success: true, message: "All Jobs Are Fetching Successfull !", data: appliedJobs, length: appliedJobs.length })
   } catch (error) {
