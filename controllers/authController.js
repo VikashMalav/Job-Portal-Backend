@@ -155,7 +155,7 @@ const registerUser = async (req, res, next) => {
             { expiresIn: "1d" }
         );
 
-        res.cookie("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
+        res.cookie("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 ,secure:true,sameSite:"None"})
 
         res.status(201).json({
             success: true,
@@ -191,7 +191,7 @@ const loginUser = async (req, res, next) => {
             return next(new Error("Invalid Credentials"))
         }
         let token = jwt.sign({ id: user._id, name: user.name, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' })
-        res.cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === 'production' })
+        res.cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000, secure:true,sameSite:"None" })
         res.status(200).json({
             success: true,
             message: "login successfully!",
@@ -222,9 +222,13 @@ const getUserProfile = async (req, res, next) => {
     try {
        if(!req.user) return res.status(401).json({success:false,message:"UnAuthorized: Please Login First"})
         allUserDetails =await userModel.findOne({_id:req.user.id},"-password")
+    console.log(
+        `all user details : ${allUserDetails}`
+    )
          res.json({success:true,message:"User Profile",user:allUserDetails})
     } catch (error) {
         console.log(error)
+        next(new Error("Error to get profile"))
     }
 }
 
@@ -259,6 +263,7 @@ const updateUserProfile = async (req, res, next) => {
         });
     } catch (error) {
         console.log(error)
+         next(new Error("Error to update profile"))
     }
 }
 

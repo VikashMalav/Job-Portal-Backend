@@ -21,7 +21,7 @@ const uri = process.env.DB_URI;
 
 
 app.use(cors({
-  origin:process.env.ORIGIN ,
+  origin:[process.env.ORIGIN ],
     credentials: true
 }));
 app.use(cookieParser())

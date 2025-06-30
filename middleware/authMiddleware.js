@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 exports.authMiddleware = async (req, res, next) => {
     try {
         const token = req.cookies?.token;
-
+console.log(`token :`,token)
         if (!token) {
             res.status(401);
             return next(new Error("Authentication token missing. Please log in again."));
