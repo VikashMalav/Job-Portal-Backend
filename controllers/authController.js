@@ -210,7 +210,7 @@ const loginUser = async (req, res, next) => {
 const logoutUser = async (req, res, next) => {
     try {
        const {user} =req?.user
-       res.clearCookie('token',{httpOnly:true})
+       res.clearCookie('token',{httpOnly:true,secure:true,sameSite:"None"})
        res.status(200).json({success:true,message:"user logout successfull !"})
     } catch (error) {
         console.log(error)
