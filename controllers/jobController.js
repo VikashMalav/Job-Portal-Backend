@@ -3,12 +3,12 @@ const JobModel = require("../models/JobModel")
 
 exports.getAllJobs = async (req, res, next) => {
     try {
-        const { page = 1, limit = 5 } = req.query
+        const { page = 1, limit = 10 } = req.query
         const skip = (page - 1) * limit
 
-        const jobs = await JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({createdAt:-1}).populate("company", "name")
-        const total =await JobModel.countDocuments()
-        res.json({ success: true, message: "All Jobs List", jobs,page:parseInt(page), totalJobs:total,totalPages:Math.ceil(total/limit) })
+        const jobs = await JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({ createdAt: -1 }).populate("company", "name")
+        const total = await JobModel.countDocuments()
+        res.json({ success: true, message: "All Jobs List", jobs, page: parseInt(page), totalJobs: total, totalPages: Math.ceil(total / limit) })
     } catch (error) {
         console.log(error)
         next(error)
