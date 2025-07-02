@@ -6,8 +6,9 @@ exports.getAllJobs = async (req, res, next) => {
         const { page = 1, limit = 10 } = req.query
         const skip = (page - 1) * limit
 
-        const jobs = await JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({ createdAt: -1 }).populate("company", "name")
-        const total = await JobModel.countDocuments()
+        const jobsPromise =  JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({ createdAt: -1 }).populate("company", "name")
+        const totalPromise =  JobModel.countDocuments()
+        const [jobs, total] = await Promise.all([jobsPromise, totalPromise])
         res.json({ success: true, message: "All Jobs List", jobs, page: parseInt(page), totalJobs: total, totalPages: Math.ceil(total / limit) })
     } catch (error) {
         console.log(error)
