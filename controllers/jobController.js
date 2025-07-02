@@ -3,13 +3,19 @@ const JobModel = require("../models/JobModel")
 
 exports.getAllJobs = async (req, res, next) => {
     try {
+        console.time("getAllJobs")
         const { page = 1, limit = 10 } = req.query
         const skip = (page - 1) * limit
-
-        const jobsPromise =  JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({ createdAt: -1 }).populate("company", "name")
-        const totalPromise =  JobModel.countDocuments()
+        console.time("jobsPromise")
+        const jobsPromise = await JobModel.find().skip(parseInt(skip)).limit(parseInt(limit)).sort({ createdAt: -1 }).populate("company", "name")
+        console.timeEnd("jobsPromise")
+        console.time("totalPromise")
+        // Using Promise.all to run both queries concurrently
+        const totalPromise = await JobModel.countDocuments()
+        console.timeEnd("totalPromise")
         const [jobs, total] = await Promise.all([jobsPromise, totalPromise])
         res.json({ success: true, message: "All Jobs List", jobs, page: parseInt(page), totalJobs: total, totalPages: Math.ceil(total / limit) })
+        console.timeEnd("getAllJobs")
     } catch (error) {
         console.log(error)
         next(error)
