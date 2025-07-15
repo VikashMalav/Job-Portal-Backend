@@ -146,17 +146,17 @@ exports.updateUserById = async (req, res, next) => {
 exports.deleteUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
-       const user =req.user; 
-       
-        if(user.id.toString()!==id && user.role!=="admin"){
+        const user = req.user;
+
+        if (user.id.toString() !== id && user.role !== "admin") {
             res.status(403).json({
-                success:false,
-                message:"You are not authorized to delete this user"
+                success: false,
+                message: "You are not authorized to delete this user"
             })
         }
-        
-        const deletedUser =await userModel.findByIdAndDelete(id)
-         if (!deletedUser) {
+
+        const deletedUser = await userModel.findByIdAndDelete(id)
+        if (!deletedUser) {
             return res.status(404).json({
                 success: false,
                 message: "User not found"
@@ -174,19 +174,62 @@ exports.deleteUserById = async (req, res, next) => {
     }
 
 }
+
 exports.getSavedJobs = async (req, res, next) => {
     try {
-      
-    } catch (error) {
-        console.log(error)
-    }
+        const userId = req.params.id;
+        console.log("User ID:", JSON.stringify(userId));
 
-}
+        if (userId !== req.user.id) {
+            return res.status(403).json({ success: false, message: "Unauthorized" });
+        }
+
+        const user = await userModel.findById(userId).populate('savedJobs');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        res.status(200).json({ success: true, savedJobs: user.savedJobs });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
+
 exports.saveJob = async (req, res, next) => {
     try {
+        const userId = req.params.id;
+        const jobId = req.params.jobId;
 
+
+        if (userId !== req.user.id) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const alreadySaved = user.savedJobs.includes(jobId);
+
+        if (alreadySaved) {
+
+            user.savedJobs.pull(jobId);
+            await user.save();
+            return res.status(200).json({success:true, message: "Job unsaved successfully" });
+        } else {
+
+            user.savedJobs.push(jobId);
+            await user.save();
+            return res.status(200).json({success:true, message: "Job saved successfully" });
+        }
     } catch (error) {
-        console.log(error)
+        console.error(error);
+        next(error);
     }
+};
 
-}

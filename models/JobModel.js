@@ -24,8 +24,8 @@ const jobSchema = new mongoose.Schema({
     ref: 'User', // employer who posted the job
     required: true,
   },
-  applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  saved:{type:Boolean,default:false}
+  applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+ 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Job', jobSchema);

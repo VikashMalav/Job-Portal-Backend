@@ -1,33 +1,15 @@
 const express = require('express');
-// const { createUser, userList, deleteUser, updateUser } = require('../controllers/userController');
-// const { signUp, login, authCheck, logout } = require('../controllers/authController');
+
 const {
   registerUser,
   loginUser,
   logoutUser,
   getUserProfile,
-  updateUserProfile
+  updateUserProfile,
+  changePassword
 } = require('../controllers/authController');
 const { authMiddleware } = require('../middleware/authMiddleware');
 const authRoute = express.Router();
-
-// router.get('/all-user', authMiddleware ,userList);
-// router.get('/check-Auth',authMiddleware,authCheck)
-// router.get ('/logout',authMiddleware,logout)
-
-// router.post('/register',signUp);
-// router.post('/login',login);
-// router.post('/create', authMiddleware, createUser);
-
-// router.delete('/delete/:id', authMiddleware,deleteUser)
-// router.put('/update/:id', authMiddleware,updateUser)
-
-//this below routes for job-portal
-
-// const express = require('express');
-// const router = express.Router();
-
-
 
 
 // @route   POST /api/auth/register
@@ -45,4 +27,6 @@ authRoute.get('/profile', authMiddleware, getUserProfile);
 // @route   PUT /api/auth/update-profile
 authRoute.put('/update-profile', authMiddleware, updateUserProfile);
 
+// @route   PUT /api/auth/change-password
+authRoute.put('/change-password', authMiddleware, changePassword);
 module.exports = authRoute;

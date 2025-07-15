@@ -184,7 +184,12 @@ const loginUser = async (req, res, next) => {
             res.status(404)
             return next(new Error("User Not Registered Please SignUp First"))
         }
+        console.log("password : ", password)
+        console.log("user : ", user,)
+        console.log("user password : ", user.password)
+
         let isMatch = await bcrypt.compare(password, user.password)
+        console.log("Match : ", isMatch)
 
         if (!isMatch) {
             res.status(401);
@@ -267,6 +272,41 @@ const updateUserProfile = async (req, res, next) => {
     }
 }
 
-module.exports = { signUp, login, authCheck, logout, getUserProfile, updateUserProfile, loginUser, logoutUser, registerUser };
+const changePassword = async (req, res, next) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, message: "Current and new passwords are required" });
+        }
+        if (newPassword.length < 8) {
+            return res.status(400).json({ success: false, message: "New password must be at least 8 characters long" });
+        }
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ success: false, message: "New password must be different from current password" });
+        }
+        // Check if the current password matches the stored password
+        // Using bcrypt to compare the current password with the hashed password
+        const userStored = await User.findById(req.user.id);
+        const isMatch = await bcrypt.compare(currentPassword, userStored.password);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: "Current password is incorrect" });
+        }
+
+        userStored.password = newPassword
+        await userStored.save();
+
+        res.status(200).json({ success: true, message: "Password changed successfully" });
+    } catch (error) {
+        console.log(error);
+        next(new Error("Error changing password"));
+    }
+}
+
+module.exports = { signUp, login, authCheck, logout, getUserProfile, updateUserProfile, loginUser, logoutUser, registerUser, changePassword };
 
 
