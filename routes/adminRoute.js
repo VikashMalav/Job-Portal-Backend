@@ -27,7 +27,7 @@ router.delete('/user/:id', authMiddleware, isAdmin, deleteUserByAdmin);
 // @route   DELETE /api/admin/job/:id
 router.delete('/job/:id', authMiddleware, isAdmin, deleteJobByAdmin);
 
-// @route   GET /api/admin/stats
-router.get('/stats', authMiddleware, isAdmin, getDashboardStats);
+// @route   GET /api/admin/dashboard-stats
+router.get('/dashboard-stats', authMiddleware, isAdmin, getDashboardStats);
 
 module.exports = router;

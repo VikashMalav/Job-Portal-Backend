@@ -184,10 +184,7 @@ const loginUser = async (req, res, next) => {
             res.status(404)
             return next(new Error("User Not Registered Please SignUp First"))
         }
-        console.log("password : ", password)
-        console.log("user : ", user,)
-        console.log("user password : ", user.password)
-
+        
         let isMatch = await bcrypt.compare(password, user.password)
         console.log("Match : ", isMatch)
 
