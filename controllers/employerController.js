@@ -3,6 +3,31 @@ const JobModel = require("../models/JobModel");
 const CompanyModel = require("../models/CompanyModel");
 const ApplicationModel = require("../models/ApplicationModel");
 
+// Dashboard stats for employer
+exports.getDashboardStatsForEmployer = async (req, res, next) => {
+    try {
+        const employerId = req.query.employerId;
+        if (!employerId || !mongoose.Types.ObjectId.isValid(employerId)) {
+            return res.status(400).json({ success: false, message: "Invalid employerId" });
+        }
+        // Total jobs posted by employer
+        const totalJobs = await JobModel.countDocuments({ createdBy: employerId });
+        // Active jobs posted by employer (assuming status: 'active')
+        const jobsActive = await JobModel.countDocuments({ createdBy: employerId});
+        // Total applicants for all jobs posted by employer
+        const jobIds = await JobModel.find({ createdBy: employerId }).distinct('_id');
+        const totalApplicants = await ApplicationModel.countDocuments({ job: { $in: jobIds } });
+        res.json({
+            totalJobs,
+            jobsActive,
+            totalApplicants
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 exports.getMyJobs = async (req, res, next) => {
     try {
 

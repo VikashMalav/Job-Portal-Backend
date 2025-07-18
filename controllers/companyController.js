@@ -66,10 +66,11 @@ exports.createCompany = async (req, res, next) => {
     });
 
     const savedCompany = await company.save();
-    if (req.query.bulk) {
-      const manyCompany = await CompanyModel.insertMany()
-
-      res.json({ success: true, manyCompany })
+    if (!savedCompany) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to create company"
+      });
     }
     res.status(201).json({
       success: true,

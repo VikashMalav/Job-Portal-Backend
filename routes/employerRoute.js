@@ -5,11 +5,15 @@ const {
   postNewJob,
   updateJob,
   deleteJob,
-  getJobApplications
+  getJobApplications,
+  getDashboardStatsForEmployer
 } = require('../controllers/employerController');
 
 const { authMiddleware } = require('../middleware/authMiddleware');
 const { isEmployerOrAdmin } = require('../middleware/authAdminEmployer');
+
+// @route   GET /api/employer/dashboard-stats?employerId=...
+router.get('/dashboard-stats', authMiddleware, isEmployerOrAdmin, getDashboardStatsForEmployer);
 
 // @route   GET /api/employer/jobs -> Employer's posted jobs
 router.get('/jobs', authMiddleware, isEmployerOrAdmin, getMyJobs);
