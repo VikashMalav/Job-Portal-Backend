@@ -178,13 +178,16 @@ exports.deleteUserById = async (req, res, next) => {
 exports.getSavedJobs = async (req, res, next) => {
     try {
         const userId = req.params.id;
-        console.log("User ID:", JSON.stringify(userId));
-
         if (userId !== req.user.id) {
             return res.status(403).json({ success: false, message: "Unauthorized" });
         }
 
-        const user = await userModel.findById(userId).populate('savedJobs');
+        const user = await userModel
+          .findById(userId)
+          .populate({
+            path: 'savedJobs',
+            populate: { path: 'company', select: 'name' }
+          });
 
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
