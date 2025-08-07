@@ -36,6 +36,7 @@ exports.getMyJobs = async (req, res, next) => {
         if (!user) return res.status(400).json({ success: false, message: "Employer Need To Be Login First" })
         const jobList = await JobModel.find({ createdBy: user.id }).populate("company", "name industry location")
         if (!jobList?.length > 0) return res.status(404).json({ success: true, message: "No Jobs Posted " })
+            console.log("jobList", jobList)
         res.json({ success: true, message: "Jobs Fetched Successfully ", data: jobList, length: jobList.length })
     } catch (error) {
         console.log(error)
